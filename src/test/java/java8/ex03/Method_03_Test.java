@@ -2,6 +2,9 @@ package java8.ex03;
 
 import java.util.List;
 
+import javax.annotation.Generated;
+import javax.management.InstanceAlreadyExistsException;
+
 import org.junit.Test;
 
 import java8.data.Data;
@@ -18,24 +21,29 @@ public class Method_03_Test {
 
         // TODO créer une méthode statique IDao getDefaultInstance()
         // TODO cette méthode retourne une instance de la classe DaoA
+        static IDao getDefaultInstance() {
+        	return new Method_03_Test().new DaoA();
+        }
     }
     // end::IDao[]
 
     class DaoA implements IDao {
 
+    	
         List<Person> people = Data.buildPersonList(20);
 
+        
         @Override
         public List<Person> findAll() {
             return people;
         }
-
+        
     }
 
     @Test
     public void test_getDefaultInstance() throws Exception {
         // TODO invoquer la méthode getDefaultInstance() pour que le test soit passant
-        IDao result = null;
+        IDao result = IDao.getDefaultInstance();
 
         assert result.findAll().size() == 20;
     }
