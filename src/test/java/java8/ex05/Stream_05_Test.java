@@ -6,8 +6,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.IntSummaryStatistics;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.*;
@@ -30,7 +33,7 @@ public class Stream_05_Test {
     class Naissance {
         String annee;
         String jour;
-        Integer nombre;
+        Integer nombre; 
 
         public Naissance(String annee, String jour, Integer nombre) {
             this.annee = annee;
@@ -69,10 +72,16 @@ public class Stream_05_Test {
 
         // TODO utiliser la méthode java.nio.file.Files.lines pour créer un stream de lignes du fichier naissances_depuis_1900.csv
         // Le bloc try(...) permet de fermer (close()) le stream après utilisation
-        try (Stream<String> lines = null) {
+        try (Stream<String> lines = Files.lines(Paths.get(NAISSANCES_DEPUIS_1900_CSV)) ) {
 
             // TODO construire une MAP (clé = année de naissance, valeur = somme des nombres de naissance de l'année)
-            Map<String, Integer> result = null;
+            Map<String, Integer> result = lines.skip(1).map(s -> {
+            	String[] strs = s.split(";");
+            	Naissance n = new Naissance(strs[1],strs[2],Integer.parseInt(strs[3]));
+            			return n;
+            })
+    		.collect(Collectors.groupingBy(Naissance::getAnnee, Collectors.summingInt(Naissance::getNombre) )
+    		);
 
 
             assertThat(result.get("2015"), is(8097));
@@ -85,10 +94,15 @@ public class Stream_05_Test {
 
         // TODO utiliser la méthode java.nio.file.Files.lines pour créer un stream de lignes du fichier naissances_depuis_1900.csv
         // Le bloc try(...) permet de fermer (close()) le stream après utilisation
-        try (Stream<String> lines = null) {
+        try (Stream<String> lines = Files.lines(Paths.get(NAISSANCES_DEPUIS_1900_CSV))) {
 
             // TODO trouver l'année où il va eu le plus de nombre de naissance
-            Optional<Naissance> result = null;
+            Optional<Naissance> result = lines.skip(1).map(s -> {
+            	String[] strs = s.split(";");
+            	Naissance n = new Naissance(strs[1],strs[2],Integer.parseInt(strs[3]));
+            			return n;
+            })
+    		.max(Comparator.comparingInt(Naissance::getNombre));
 
 
             assertThat(result.get().getNombre(), is(48));
