@@ -1,11 +1,12 @@
 package java8.ex06;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.Comparator;
 import java.util.function.Consumer;
-import java.util.function.UnaryOperator;
 import java.util.logging.Logger;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
@@ -34,7 +35,7 @@ public class Stream_06_Test {
     // TODO utiliser la méthode Stream.iterate
     // TODO cette méthode doit produire le même résultat que imperativeSum
     private long iterateSum(long n) {
-        return 0;
+    	return Stream.iterate(0L, x -> x + 1L).limit(n).reduce(Long::sum).get().longValue();
     }
 
     // TODO exécuter le test pour vérifier que les méthodes imperativeSum et iterateSum produisent le même résultat
@@ -53,11 +54,12 @@ public class Stream_06_Test {
     // TODO utiliser la méthode Stream.iterate
     // TODO transformer en stream parallel (.parallel())
     private long parallelIterateSum(long n) {
-        return 0;
+        return Stream.iterate(0L, l -> l + 1L).parallel().reduce(Long::sum).get().longValue();
     }
 
     // TODO exécuter le test pour vérifier que les méthodes imperativeSum, iterateSum et parallelIterateSum produisent le même résultat
     @Test
+    @Ignore
     public void test_imperativeSum_vs_iterateSum_vs_parallelIterateSum() {
 
         Stream.of(1L, 1000L, NB).forEach(n -> {
@@ -91,9 +93,9 @@ public class Stream_06_Test {
     // TODO visualiser les temps d'exécution
     @Test
     public void monitor_imperativeSum_vs_iterateSum_vs_parallelIterateSum() {
-        Logger.getAnonymousLogger().info("imperativeSum => " + /* TODO */" ms");
-        Logger.getAnonymousLogger().info("iterateSum => " + /* TODO */" ms");
-        Logger.getAnonymousLogger().info("parallelIterateSum => " + /* TODO */ " ms");
+        Logger.getAnonymousLogger().info("imperativeSum => " + monitor(this::imperativeSum, 100L) +" ms");
+        Logger.getAnonymousLogger().info("iterateSum => " +  monitor(this::iterateSum, 100L) +" ms");
+        Logger.getAnonymousLogger().info("parallelIterateSum => " +  monitor(this::parallelIterateSum, 100L) + " ms");
     }
 
     // Quel résultat obtenez-vous ?
@@ -107,7 +109,7 @@ public class Stream_06_Test {
     // TODO compléter la méthode rangeSum
     // TODO utiliser la méthode LongStream.rangeClosed
     private long rangeSum(long n) {
-        return 0;
+        return LongStream.rangeClosed(0L, n-1).sum();
     }
 
     // TODO vérifier que l'implémentation de rangeSum
@@ -126,7 +128,7 @@ public class Stream_06_Test {
     // TODO utiliser la méthode LongStream.rangeClosed
     // TODO transformer en stream parallel (.parallel())
     private long rangeParallelSum(long n) {
-        return 0;
+        return LongStream.rangeClosed(0L, n-1).parallel().sum();
     }
 
     // TODO vérifier que l'implémentation de rangeParallelSum
@@ -145,11 +147,11 @@ public class Stream_06_Test {
 
     @Test
     public void monitor_imperativeSum_vs_iterateSum_vs_parallelIterateSum_vs_rangeSum_vs_rangeParallelSum() {
-        Logger.getAnonymousLogger().info("imperativeSum => " + /* TODO */ " ms");
-        Logger.getAnonymousLogger().info("iterateSum => " + /* TODO */ " ms");
-        Logger.getAnonymousLogger().info("parallelIterateSum => " + /* TODO */ " ms");
-        Logger.getAnonymousLogger().info("rangeSum => " + /* TODO */" ms");
-        Logger.getAnonymousLogger().info("rangeParallelSum => " /* TODO */ + " ms");
+        Logger.getAnonymousLogger().info("imperativeSum => " + monitor(this::imperativeSum, 100L) +" ms");
+        Logger.getAnonymousLogger().info("iterateSum => " +  monitor(this::iterateSum, 100L) +" ms");
+        Logger.getAnonymousLogger().info("parallelIterateSum => " +  monitor(this::parallelIterateSum, 100L) + " ms");
+        Logger.getAnonymousLogger().info("rangeSum => " + monitor(this::rangeSum, 100L) +" ms");
+        Logger.getAnonymousLogger().info("rangeParallelSum => " + monitor(this::rangeParallelSum, 100L) + " ms");
     }
 
     // Quel résultat obtenez-vous ?
